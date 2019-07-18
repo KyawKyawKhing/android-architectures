@@ -46,5 +46,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.4.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
-    implementation 'saschpe.android:customtabs:1.1.2'
+    implementation 'androidx.cardview:cardview:1.0.0'
 }
