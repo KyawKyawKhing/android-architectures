@@ -12,5 +12,6 @@ interface MainContract{
     interface MainPresenter{
         fun attachView(view: MainView)
         fun loadMovieList()
+        fun detachView()
     }
 }

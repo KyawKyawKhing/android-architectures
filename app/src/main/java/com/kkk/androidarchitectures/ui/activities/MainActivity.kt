@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.kkk.androidarchitectures.R
 import com.kkk.androidarchitectures.data.models.MovieModel
 import com.kkk.androidarchitectures.data.vos.MovieVO
+import com.kkk.androidarchitectures.di.Injection
 import com.kkk.androidarchitectures.mvp.contract.MainContract
 import com.kkk.androidarchitectures.mvp.presenter.MainPresenterImpl
 import com.kkk.androidarchitectures.ui.adapters.MovieListAdapter
@@ -16,7 +17,7 @@ class MainActivity : AppCompatActivity(), MainContract.MainView {
 
     private val mAdapter: MovieListAdapter by lazy { MovieListAdapter(this::onClickNoticeListItem) }
 
-    private val mPresenter: MainContract.MainPresenter by lazy { MainPresenterImpl() }
+    private val mPresenter: MainContract.MainPresenter by lazy { MainPresenterImpl(Injection.provideMainRepository()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,5 +42,10 @@ class MainActivity : AppCompatActivity(), MainContract.MainView {
 
     override fun showError(error: String) {
         Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mPresenter.detachView()
     }
 }

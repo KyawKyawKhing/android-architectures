@@ -27,24 +27,5 @@ class MovieModel : BaseModel() {
                     onError(it)
                 })
         )
-//            .subscribe(object : Observer<MovieListResponse> {
-//                override fun onSubscribe(d: Disposable) {
-//
-//                }
-//
-//                override fun onNext(movieList: MovieListResponse) {
-////                    if (movieList != null) {
-////                        homePresenter.displayData(movieList!!.getMovieList())
-////                    }
-//                }
-//
-//                override fun onError(e: Throwable) {
-////                    homePresenter.displayError(e.message)
-//                }
-//
-//                override fun onComplete() {
-//
-//                }
-//            })
     }
 }
