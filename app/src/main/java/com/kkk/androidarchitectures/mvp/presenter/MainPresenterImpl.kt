@@ -1,5 +1,6 @@
 package com.kkk.androidarchitectures.mvp.presenter
 
+import androidx.lifecycle.MutableLiveData
 import com.kkk.androidarchitectures.data.repositories.MainRepository
 import com.kkk.androidarchitectures.mvp.contract.MainContract
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -16,17 +17,26 @@ class MainPresenterImpl(private val repository: MainRepository) : MainContract.M
     }
 
     override fun loadMovieList() {
-        disposable.add(
-            repository.fetchMovieData()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext { repository.saveDataIntoDatabase(it.movieList) }
-                .subscribe({
-                    mView?.showMovieList(it.movieList)
-                }, {
-                    mView?.showError(it.localizedMessage!!)
-                })
-        )
+        repository.movieData
+            .observeForever {
+                disposable.add(
+                    it
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext {
+                            repository.saveDataIntoDatabase(it.movieList)
+                        }
+                        .subscribe({ response ->
+                            repository.movieData = MutableLiveData()
+                            mView?.showMovieList(response.movieList)
+                        }, { error ->
+                            mView?.showError(error.localizedMessage!!)
+                        })
+                )
+            }
+
+
+        repository.fetchMovieData()
     }
 
     override fun detachView() {

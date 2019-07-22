@@ -17,7 +17,6 @@ abstract class MyDatabase : RoomDatabase() {
         fun getInstance(context: Context): MyDatabase {
             if (instance == null) {
                 instance = Room.databaseBuilder(context, MyDatabase::class.java, "MyDBName")
-                    .allowMainThreadQueries()//to allow query in main thread
                     .build()
             }
             return instance as MyDatabase

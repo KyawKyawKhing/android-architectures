@@ -1,6 +1,7 @@
 package com.kkk.androidarchitectures.data.repositories
 
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import com.kkk.androidarchitectures.data.db.MyDatabase
 import com.kkk.androidarchitectures.data.vos.MovieVO
 import com.kkk.androidarchitectures.network.ApiService
@@ -15,19 +16,32 @@ class MainRepositoryImpl(
     private val mApiService: ApiService,
     private val database: MyDatabase
 ) : MainRepository {
-    override fun fetchMovieData(): Observable<MovieListResponse> {
+    override var movieData: MutableLiveData<Observable<MovieListResponse>> = MutableLiveData()
 
+    override fun fetchMovieData() {
         if (Utils.isOnline(context)) {
-            return mApiService.loadMovieList()
+            movieData.postValue(mApiService.loadMovieList())
         } else {
             val localMovieDataList = database.movieDao().allData
-            val responseData = MovieListResponse()
-            responseData.movieList = localMovieDataList
-            return Observable.just(responseData)
+            val disposable = CompositeDisposable()
+            disposable.add(
+            localMovieDataList
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe {
+                    disposable.clear()
+                    val responseData = MovieListResponse()
+                    responseData.movieList = it
+                    movieData.postValue(Observable.just(responseData))
+                }
+            )
         }
     }
 
     override fun saveDataIntoDatabase(movieList: List<MovieVO>) {
-        database.movieDao().insertAll(movieList)
+        Observable.fromCallable{database.movieDao().insertAll(movieList)}
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe()
     }
 }
