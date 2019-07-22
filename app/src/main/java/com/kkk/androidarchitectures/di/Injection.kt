@@ -1,7 +1,9 @@
 package com.kkk.androidarchitectures.di
 
+import android.content.Context
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import com.kkk.androidarchitectures.data.db.MyDatabase
 import com.kkk.androidarchitectures.data.repositories.MainRepository
 import com.kkk.androidarchitectures.data.repositories.MainRepositoryImpl
 import com.kkk.androidarchitectures.network.ApiService
@@ -13,7 +15,7 @@ import java.util.concurrent.TimeUnit
 
 object Injection {
 
-    fun provideApiService(): ApiService {
+    private fun provideApiService(): ApiService {
         val okHttpClient = OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
@@ -26,11 +28,15 @@ object Injection {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .client(okHttpClient)
             .build()
-        return retrofit.create(ApiService::class.java!!)
+        return retrofit.create(ApiService::class.java)
     }
 
-    fun provideMainRepository():MainRepository{
-        return MainRepositoryImpl(provideApiService())
+    private fun provideDatabase(context:Context):MyDatabase{
+        return MyDatabase.getInstance(context)
+    }
+
+    fun provideMainRepository(context: Context):MainRepository{
+        return MainRepositoryImpl(context,provideApiService(), provideDatabase(context))
     }
 
 }

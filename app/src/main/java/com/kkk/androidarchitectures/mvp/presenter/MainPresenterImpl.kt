@@ -20,6 +20,7 @@ class MainPresenterImpl(private val repository: MainRepository) : MainContract.M
             repository.fetchMovieData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { repository.saveDataIntoDatabase(it.movieList) }
                 .subscribe({
                     mView?.showMovieList(it.movieList)
                 }, {

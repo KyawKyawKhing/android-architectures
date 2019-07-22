@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.kkk.androidarchitectures.R
-import com.kkk.androidarchitectures.data.models.MovieModel
 import com.kkk.androidarchitectures.data.vos.MovieVO
 import com.kkk.androidarchitectures.di.Injection
 import com.kkk.androidarchitectures.mvp.contract.MainContract
@@ -17,7 +16,7 @@ class MainActivity : AppCompatActivity(), MainContract.MainView {
 
     private val mAdapter: MovieListAdapter by lazy { MovieListAdapter(this::onClickNoticeListItem) }
 
-    private val mPresenter: MainContract.MainPresenter by lazy { MainPresenterImpl(Injection.provideMainRepository()) }
+    private val mPresenter: MainContract.MainPresenter by lazy { MainPresenterImpl(Injection.provideMainRepository(applicationContext)) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
