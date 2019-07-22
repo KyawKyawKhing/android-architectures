@@ -16,7 +16,7 @@ class MovieModel : BaseModel() {
         return INSTANCE!!
     }
 
-    fun loadNoticeListData(onSuccess: (response: MovieListResponse) -> Unit, onError: (error: Throwable) -> Unit) {
+    fun loadMovieListData(onSuccess: (response: MovieListResponse) -> Unit, onError: (error: Throwable) -> Unit) {
         disposable.add(
             mApiService.loadMovieList()
                 .subscribeOn(Schedulers.io())
