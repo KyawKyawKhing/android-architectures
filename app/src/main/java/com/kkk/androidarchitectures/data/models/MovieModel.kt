@@ -1,26 +1,24 @@
 package com.kkk.androidarchitectures.data.models
 
-import com.kkk.androidarchitectures.network.network_response.NoticeListResponse
-import io.reactivex.Observer
+import com.kkk.androidarchitectures.network.network_response.MovieListResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class NoticeModel : BaseModel() {
-    private var INSTANCE: NoticeModel? = null
+class MovieModel : BaseModel() {
+    private var INSTANCE: MovieModel? = null
     val disposable: CompositeDisposable by lazy { CompositeDisposable() }
 
-    fun getInstance(): NoticeModel {
+    fun getInstance(): MovieModel {
         if (INSTANCE == null) {
-            INSTANCE = NoticeModel()
+            INSTANCE = MovieModel()
         }
         return INSTANCE!!
     }
 
-    fun loadNoticeListData(onSuccess: (response: NoticeListResponse) -> Unit, onError: (error: Throwable) -> Unit) {
+    fun loadNoticeListData(onSuccess: (response: MovieListResponse) -> Unit, onError: (error: Throwable) -> Unit) {
         disposable.add(
-            mApiService.loadNoticeList()
+            mApiService.loadMovieList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -29,14 +27,14 @@ class NoticeModel : BaseModel() {
                     onError(it)
                 })
         )
-//            .subscribe(object : Observer<NoticeListResponse> {
+//            .subscribe(object : Observer<MovieListResponse> {
 //                override fun onSubscribe(d: Disposable) {
 //
 //                }
 //
-//                override fun onNext(noticeList: NoticeListResponse) {
-////                    if (noticeList != null) {
-////                        homePresenter.displayData(noticeList!!.getNoticeList())
+//                override fun onNext(movieList: MovieListResponse) {
+////                    if (movieList != null) {
+////                        homePresenter.displayData(movieList!!.getMovieList())
 ////                    }
 //                }
 //

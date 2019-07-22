@@ -16,7 +16,7 @@
 
         <!-- Text Notice Name -->
         <TextView
-                android:id="@+id/tvNoticeTitle"
+                android:id="@+id/tvMovieTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="3dp"
@@ -25,22 +25,20 @@
 
         <!-- Text Notice Description -->
         <TextView
-                android:id="@+id/tvNoticeBrief"
+                android:id="@+id/tvMovieBrief"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="3dp"
                 android:text="brief"/>
 
-        <!-- Text Notice FilePath -->
-        <TextView
-                android:id="@+id/tvNoticeFilePath"
+        <!-- Movie Cover Image -->
+        <ImageView
+                android:id="@+id/ivMovieCover"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="3dp"
-                android:text="notice file path"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="12sp"
-                android:textStyle="italic"/>
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher"/>
 
     </LinearLayout>
 
