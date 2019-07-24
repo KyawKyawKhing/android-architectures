@@ -3,20 +3,25 @@ package com.kkk.androidarchitectures.ui.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.kkk.androidarchitectures.R
 import com.kkk.androidarchitectures.data.vos.MovieVO
 import com.kkk.androidarchitectures.di.Injection
-import com.kkk.androidarchitectures.mvp.contract.MainContract
-import com.kkk.androidarchitectures.mvp.presenter.MainPresenterImpl
 import com.kkk.androidarchitectures.ui.adapters.MovieListAdapter
+import com.kkk.androidarchitectures.viewmodels.MainViewModel
+import com.kkk.androidarchitectures.viewmodels.factory.MainViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), MainContract.MainView {
+class MainActivity : AppCompatActivity() {
 
     private val mAdapter: MovieListAdapter by lazy { MovieListAdapter(this::onClickNoticeListItem) }
 
-    private val mPresenter: MainContract.MainPresenter by lazy { MainPresenterImpl(Injection.provideMainRepository(applicationContext)) }
+    private val mViewModel: MainViewModel by lazy {
+        ViewModelProviders.of(this, MainViewModelFactory(Injection.provideMainRepository(applicationContext)))
+            .get(MainViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,25 +31,19 @@ class MainActivity : AppCompatActivity(), MainContract.MainView {
             adapter = mAdapter
         }
 
-        mPresenter.attachView(this)
-        mPresenter.loadMovieList()
+        mViewModel.successState.observe(this, Observer {
+            this.mAdapter.setNewList(it)
+        })
+        mViewModel.errorState.observe(this, Observer {
+            Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
+        })
+
+        mViewModel.loadMovieList()
     }
+
 
     private fun onClickNoticeListItem(data: MovieVO) {
         Toast.makeText(applicationContext, "You clicked at ${data.title}", Toast.LENGTH_SHORT).show()
     }
 
-
-    override fun showMovieList(movieList: List<MovieVO>) {
-        this.mAdapter.setNewList(movieList)
-    }
-
-    override fun showError(error: String) {
-        Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mPresenter.detachView()
-    }
 }
